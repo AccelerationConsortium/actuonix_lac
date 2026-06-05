@@ -1,0 +1,14 @@
+# Build / packaging artifacts
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+
+# uv
+uv.lock
+
+# Python bytecode
+__pycache__/
+*.py[cod]
