@@ -64,3 +64,40 @@ Activate with `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` 
         PID = 0xfc5f
 
    The device must be bound to the WinUSB driver for `pyusb` to talk to it.
+
+# Demo
+
+The `src/pylac.py` module ships with a `__main__` block that cycles the actuator through `90 → 500 → 950` (raw 10-bit counts) in an infinite loop. Run it with:
+
+    uv run python src/pylac.py
+
+Stop with `Ctrl+C`.
+
+## Minimal usage example
+Sweep the actuator from one end to the other and read back position:
+
+```python
+import time
+from pylac import ActuonixLAC
+
+STROKE_MM = 100  # change to 200 or 300 to match your actuator
+
+def mm_to_count(mm):
+    return round(mm * 1023 / STROKE_MM)
+
+def count_to_mm(c):
+    return c * STROKE_MM / 1023
+
+lac = ActuonixLAC()
+lac.set_speed(800)        # 0..1023
+lac.set_accuracy(8)       # deadband in counts; smaller = tighter but jitters
+
+print(f"start: {count_to_mm(lac.get_feedback()):.2f} mm")
+
+for target_mm in (1.0, STROKE_MM - 1.0):   # near each end stop, leaves ~1 mm buffer
+    lac.set_position(mm_to_count(target_mm))
+    time.sleep(8)                          # wait for travel; tune for stroke + load
+    print(f"arrived: {count_to_mm(lac.get_feedback()):.2f} mm")
+```
+
+Run it as a script via `uv run python your_script.py` (with the venv created above), or paste into a REPL with `uv run python`.
