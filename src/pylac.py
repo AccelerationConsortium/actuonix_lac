@@ -1,4 +1,4 @@
-import sys, time, struct
+import os, sys, time, struct
 import usb.core
 import usb.backend.libusb1
 
@@ -9,8 +9,18 @@ import usb.backend.libusb1
 # "conda install -c conda-forge libusb"     # For Conda users
 # OR "pip install libusb"                   # For Pip users
 
-# Specify the libusb backend
-backend = usb.backend.libusb1.get_backend()
+def _find_libusb():
+    try:
+        import libusb
+    except ImportError:
+        return None
+    arch = "x86_64" if sys.maxsize > 2**32 else "x86"
+    dll = os.path.join(os.path.dirname(libusb.__file__), "_platform", "windows", arch, "libusb-1.0.dll")
+    return dll if os.path.exists(dll) else None
+
+# Specify the libusb backend (Windows: use DLL bundled in the `libusb` pip package)
+backend = usb.backend.libusb1.get_backend(find_library=lambda _: _find_libusb()) \
+    if sys.platform == "win32" else usb.backend.libusb1.get_backend()
 
 
 class ActuonixLAC:
@@ -46,7 +56,7 @@ class ActuonixLAC:
         self.device = usb.core.find(
             idVendor=self.VID,
             idProduct=self.PID,
-            backend=usb.backend.libusb1.get_backend()
+            backend=backend
         )
         if self.device is None:
                 raise Exception("LAC is not found. Make sure LAC is connected with the right VID/PID.")
