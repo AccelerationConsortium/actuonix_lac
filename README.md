@@ -73,6 +73,11 @@ The `src/pylac.py` module ships with a `__main__` block that cycles the actuator
 
 Stop with `Ctrl+C`.
 
+### Interactive demo
+[`examples/interactive.py`](examples/interactive.py) prompts for a target in mm (5–95 on a 100 mm stroke) and drives the actuator there, then waits for the next input. Exit with `Ctrl+C`:
+
+    uv run python examples/interactive.py
+
 ## Minimal usage example
 A runnable copy lives at [`examples/demo.py`](examples/demo.py). Sweeps the actuator from one end to the other and reads back position:
 
