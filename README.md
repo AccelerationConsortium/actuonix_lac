@@ -74,7 +74,7 @@ The `src/pylac.py` module ships with a `__main__` block that cycles the actuator
 Stop with `Ctrl+C`.
 
 ## Minimal usage example
-Sweep the actuator from one end to the other and read back position:
+A runnable copy lives at [`examples/demo.py`](examples/demo.py). Sweeps the actuator from one end to the other and reads back position:
 
 ```python
 import time
