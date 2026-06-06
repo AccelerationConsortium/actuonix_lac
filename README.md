@@ -101,3 +101,17 @@ for target_mm in (1.0, STROKE_MM - 1.0):   # near each end stop, leaves ~1 mm bu
 ```
 
 Run it as a script via `uv run python your_script.py` (with the venv created above), or paste into a REPL with `uv run python`.
+
+## Observed timing (L16-P, 100 mm stroke, max speed)
+With `set_speed(1023)` and `set_accuracy(8)`, sampling feedback every 250 ms:
+
+| Sweep                     | Travel       | Elapsed |
+|---------------------------|--------------|---------|
+| extend → retract (98 → 1) | ~97 mm       | 6.3 s   |
+| retract → extend (1 → 99) | ~97 mm       | 10.2 s  |
+| extend → retract (98 → 1) | ~97 mm       | 6.3 s   |
+
+The retract direction is consistently faster than extend on this unit — expected with gravity / spring preload assisting retraction. Steady-state mid-sweep velocity is ~30 mm/s; the overall figure is dragged down by PD-loop deceleration near the targets.
+
+## Notes / fixes
+- `set_max_derivative`, `set_min_derivative`, `set_max_pwm_value`, `set_min_pwm_value` used to reference constants that did not exist on the class (`SET_MAX_DERIVATIVE`, `SET_MIN_DERIVATIVE`, `SET_MAX_PWM_VALUE`, `SET_MIN_PWM_VALUE`) and raised `AttributeError` when called. They now use the correct names (`SET_DERIVATIVE_MAXIMUM`, `SET_DERIVATIVE_MINIMUM`, `SET_PWM_MAXIMUM`, `SET_PWM_MINIMUM`).

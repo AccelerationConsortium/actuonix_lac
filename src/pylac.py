@@ -130,20 +130,20 @@ class ActuonixLAC:
 
     def set_max_derivative(self, value=1023):
         # Maximum value the D term can contribute to control speed
-        self.send_data(self.SET_MAX_DERIVATIVE, value)
+        self.send_data(self.SET_DERIVATIVE_MAXIMUM, value)
 
     def set_min_derivative(self, value=0):
         # Minimum value the D term can contribute to control speed
-        self.send_data(self.SET_MIN_DERIVATIVE, value)
+        self.send_data(self.SET_DERIVATIVE_MINIMUM, value)
 
     def set_max_pwm_value(self, value=1023):
         # Speed the actuator runs at when outside the pwm threshold 1023 enables top speed
         # though actuator may try to move faster to avoid stalling
-        self.send_data(self.SET_MAX_PWM_VALUE, value)
+        self.send_data(self.SET_PWM_MAXIMUM, value)
 
     def set_min_pwm_value(self, value=80):
         # Minimum PWM value applied by PD
-        self.send_data(self.SET_MIN_PWM_VALUE, value)
+        self.send_data(self.SET_PWM_MINIMUM, value)
 
     def set_proportional_gain(self, value=1):
         # Higher value = faster approach to target, but also more overshoot
